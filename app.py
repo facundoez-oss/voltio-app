@@ -52,7 +52,24 @@ Formato: {{"fecha":"...","cliente":"...",...}}"""
         return jsonify(data_parsed)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@app.route('/transcribir', methods=['POST'])
+def transcribir():
+    try:
+        audio = request.files.get('audio')
+        if not audio:
+            return jsonify({"error": "No se recibió audio"}), 400
 
+        from openai import OpenAI
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=("audio.webm", audio.read(), "audio/webm"),
+            language="es"
+        )
+        return jsonify({"texto": transcript.text})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
