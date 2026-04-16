@@ -1,0 +1,58 @@
+from flask import Flask, request, jsonify, send_from_directory
+import openai
+import os
+
+app = Flask(__name__, static_folder='static')
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+CAMPOS_NUEVO = ['fecha', 'cliente', 'ubicacion', 'caja', 'caracteristicas', 'localizacion', 'incidencia', 'observaciones', 'recomendaciones']
+CAMPOS_EXISTENTE = ['nro_tarea', 'fecha', 'observaciones', 'recomendaciones', 'tareas_pendientes']
+
+@app.route('/')
+def index():
+    return send_from_directory('static', 'index.html')
+
+@app.route('/interpretar', methods=['POST'])
+def interpretar():
+    data = request.json
+    texto = data.get('texto', '')
+    tipo = data.get('tipo', 'nuevo')
+
+    campos = CAMPOS_NUEVO if tipo == 'nuevo' else CAMPOS_EXISTENTE
+    labels = {
+        'fecha': 'Fecha', 'cliente': 'Cliente', 'ubicacion': 'Ubicación',
+        'caja': 'Caja', 'caracteristicas': 'Características', 'localizacion': 'Localización',
+        'incidencia': 'Incidencia', 'observaciones': 'Observaciones',
+        'recomendaciones': 'Recomendaciones', 'nro_tarea': 'Nro. tarea',
+        'tareas_pendientes': 'Tareas pendientes'
+    }
+    lista = ', '.join([labels[c] for c in campos])
+
+    prompt = f"""Sos un asistente para un electricista. Extraé los campos de este texto.
+Tipo de parte: {'PARTE NUEVO' if tipo == 'nuevo' else 'PARTE EXISTENTE'}.
+Campos a extraer: {lista}.
+
+Texto del electricista:
+"{texto}"
+
+Respondé SOLO con un objeto JSON válido. Sin backticks, sin texto adicional.
+Si un campo no se menciona, dejá el valor como null.
+Formato: {{"fecha":"...","cliente":"...",...}}"""
+
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=1024
+        )
+        resultado = response.choices[0].message.content
+        resultado = resultado.replace("```json", "").replace("```", "").strip()
+        import json
+        data_parsed = json.loads(resultado)
+        return jsonify(data_parsed)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
