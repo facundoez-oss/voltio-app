@@ -8,23 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F8F7F4;
-    --surface: #FFFFFF;
-    --surface2: #F2F1EE;
-    --accent: #E8A020;
-    --accent-light: #FDF3E0;
-    --accent-dark: #B87A10;
-    --text: #1A1917;
-    --text2: #6B6A66;
-    --text3: #A8A7A3;
-    --border: rgba(26,25,23,0.1);
-    --border2: rgba(26,25,23,0.06);
-    --success: #2D7A4F;
-    --success-bg: #EAF5EE;
-    --danger: #C0392B;
-    --danger-bg: #FDECEA;
-    --radius: 14px;
-    --radius-sm: 8px;
+    --bg: #F8F7F4; --surface: #FFFFFF; --surface2: #F2F1EE;
+    --accent: #E8A020; --accent-light: #FDF3E0; --accent-dark: #B87A10;
+    --text: #1A1917; --text2: #6B6A66; --text3: #A8A7A3;
+    --border: rgba(26,25,23,0.1); --border2: rgba(26,25,23,0.06);
+    --success: #2D7A4F; --success-bg: #EAF5EE;
+    --danger: #C0392B; --danger-bg: #FDECEA;
+    --radius: 14px; --radius-sm: 8px;
     --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,7 +29,6 @@
   .nav-tag { font-size: 12px; color: var(--text2); background: var(--surface2); padding: 4px 10px; border-radius: 20px; }
 
   main { max-width: 560px; margin: 0 auto; padding: 32px 20px 60px; }
-
   .page-header { margin-bottom: 28px; }
   .page-header h1 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
   .page-header p { font-size: 14px; color: var(--text2); font-weight: 300; }
@@ -95,11 +84,21 @@
   .res-header h2 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; }
   .res-header p { font-size: 12px; color: var(--text3); font-weight: 300; }
 
-  .campo-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 11px 20px; gap: 16px; border-bottom: 1px solid var(--border2); }
+  .campo-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; gap: 12px; border-bottom: 1px solid var(--border2); }
   .campo-row:last-child { border-bottom: none; }
-  .campo-key { font-size: 12px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; min-width: 120px; flex-shrink: 0; padding-top: 1px; }
-  .campo-val { font-size: 14px; color: var(--text); text-align: right; max-width: 260px; line-height: 1.4; }
-  .campo-val.vacio { color: var(--danger); font-style: italic; font-size: 13px; }
+  .campo-key { font-size: 12px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; min-width: 110px; flex-shrink: 0; }
+  .campo-val { font-size: 14px; color: var(--text); text-align: right; }
+
+  .campo-editable { display: flex; align-items: center; gap: 6px; flex: 1; justify-content: flex-end; }
+  .campo-input { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; width: 100%; max-width: 200px; min-height: unset; }
+  .campo-input:focus { border-color: var(--accent); background: var(--surface); }
+  .campo-input::placeholder { color: var(--text3); font-style: italic; }
+
+  .mic-campo { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .mic-campo:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mic-campo.rec { background: var(--danger-bg); border-color: var(--danger); animation: pulse 1.2s infinite; }
+  .mic-campo svg { width: 13px; height: 13px; }
+  .mic-campo.rec svg { stroke: var(--danger); }
 
   .alerta-falta { display: none; margin: 0 20px 4px; padding: 10px 14px; background: #FDF3E0; border: 1px solid #F0C060; border-radius: var(--radius-sm); font-size: 13px; color: #7A5010; }
   .alerta-falta.visible { display: block; }
@@ -127,8 +126,6 @@
 
   footer { text-align: center; padding: 24px; font-size: 12px; color: var(--text3); }
   footer span { color: var(--accent); font-weight: 500; }
-
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @media (max-width: 480px) { main { padding: 24px 16px 48px; } .page-header h1 { font-size: 22px; } }
 </style>
 </head>
@@ -137,9 +134,7 @@
 <nav>
   <a class="nav-logo" href="#">
     <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     </div>
     <span class="logo-name">Volt<span>io</span></span>
   </a>
@@ -155,22 +150,14 @@
   <div class="tipo-wrap">
     <div class="tipo-card active" id="card-nuevo" onclick="setTipo('nuevo')">
       <div class="tipo-card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#6B6A66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="12" y1="18" x2="12" y2="12"/>
-          <line x1="9" y1="15" x2="15" y2="15"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#6B6A66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
       </div>
       <h3>Parte nuevo</h3>
       <p>Trabajo nuevo sin registrar</p>
     </div>
     <div class="tipo-card" id="card-existente" onclick="setTipo('existente')">
       <div class="tipo-card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#6B6A66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#6B6A66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </div>
       <h3>Parte existente</h3>
       <p>Actualizar tarea ya creada</p>
@@ -194,7 +181,7 @@
       </div>
       <div id="zona-audio" style="display:none;">
         <div class="mic-zone">
-          <div class="mic-outer" id="mic-btn" onclick="toggleMic()">
+          <div class="mic-outer" id="mic-btn" onclick="toggleMic('principal', 'mic-btn', 'mic-status')">
             <svg viewBox="0 0 24 24" fill="none" stroke="#1A1917" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           </div>
           <div class="mic-status" id="mic-status">Tocá para grabar</div>
@@ -223,11 +210,11 @@
       </div>
       <div>
         <h2>Confirmar parte</h2>
-        <p>Revisá que los datos estén correctos</p>
+        <p>Completá los campos faltantes si querés</p>
       </div>
     </div>
     <div class="campos-lista" id="campos-lista"></div>
-    <div class="alerta-falta" id="alerta-falta">Algunos campos no se detectaron. Podés volver a intentar con más detalle o confirmar igual.</div>
+    <div class="alerta-falta" id="alerta-falta">Algunos campos no se detectaron. Podés completarlos arriba o confirmar igual.</div>
     <div class="res-actions">
       <button class="btn-confirmar" onclick="confirmar()">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -268,11 +255,10 @@
 
   let tipo = 'nuevo';
   let tabActual = 'texto';
-  let grabando = false;
-  let mediaRec = null;
-  let audioChunks = [];
-  let timerInt = null;
-  let seg = 0;
+  let datosExtraidos = {};
+  let grabandoMap = {};
+  let mediaRecMap = {};
+  let timerMap = {};
 
   function setTipo(t) {
     tipo = t;
@@ -289,45 +275,55 @@
     document.getElementById('zona-audio').style.display = tab === 'audio' ? 'block' : 'none';
   }
 
-  async function toggleMic() {
-    if (!grabando) {
+  async function toggleMic(id, btnId, statusId, inputId) {
+    const btn = document.getElementById(btnId);
+    const statusEl = document.getElementById(statusId);
+
+    if (!grabandoMap[id]) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRec = new MediaRecorder(stream);
-        audioChunks = [];
-        mediaRec.ondataavailable = e => audioChunks.push(e.data);
-        mediaRec.onstop = async () => {
+        const rec = new MediaRecorder(stream);
+        const chunks = [];
+        rec.ondataavailable = e => chunks.push(e.data);
+        rec.onstop = async () => {
           stream.getTracks().forEach(t => t.stop());
-          document.getElementById('mic-status').textContent = 'Transcribiendo...';
-          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          if (statusEl) statusEl.textContent = 'Transcribiendo...';
+          const blob = new Blob(chunks, { type: 'audio/webm' });
           const formData = new FormData();
           formData.append('audio', blob, 'audio.webm');
           try {
             const res = await fetch('/transcribir', { method: 'POST', body: formData });
             const data = await res.json();
-            document.getElementById('input-transcripcion').value = data.texto || '';
-            document.getElementById('transcript-area').style.display = 'block';
-            document.getElementById('mic-status').textContent = 'Audio listo. Podés grabar de nuevo o interpretar.';
+            const texto = data.texto || '';
+            if (inputId) {
+              document.getElementById(inputId).value = texto;
+            } else {
+              document.getElementById('input-transcripcion').value = texto;
+              document.getElementById('transcript-area').style.display = 'block';
+            }
+            if (statusEl) statusEl.textContent = 'Listo. Podés grabar de nuevo o interpretar.';
           } catch(e) {
-            document.getElementById('mic-status').textContent = 'Error al transcribir. Intentá de nuevo.';
+            if (statusEl) statusEl.textContent = 'Error al transcribir.';
           }
         };
-        mediaRec.start();
-        grabando = true; seg = 0;
-        document.getElementById('mic-btn').classList.add('rec');
-        timerInt = setInterval(() => {
+        rec.start();
+        mediaRecMap[id] = rec;
+        grabandoMap[id] = true;
+        let seg = 0;
+        btn.classList.add('rec');
+        timerMap[id] = setInterval(() => {
           seg++;
-          document.getElementById('mic-status').textContent = `Grabando... ${seg}s — tocá para detener`;
-          if (seg >= 60) toggleMic();
+          if (statusEl) statusEl.textContent = `Grabando... ${seg}s`;
+          if (seg >= 30) toggleMic(id, btnId, statusId, inputId);
         }, 1000);
       } catch(e) {
-        document.getElementById('mic-status').textContent = 'No se pudo acceder al micrófono.';
+        if (statusEl) statusEl.textContent = 'No se pudo acceder al micrófono.';
       }
     } else {
-      clearInterval(timerInt);
-      grabando = false;
-      document.getElementById('mic-btn').classList.remove('rec');
-      if (mediaRec) mediaRec.stop();
+      clearInterval(timerMap[id]);
+      grabandoMap[id] = false;
+      btn.classList.remove('rec');
+      if (mediaRecMap[id]) mediaRecMap[id].stop();
     }
   }
 
@@ -353,6 +349,7 @@
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+      datosExtraidos = data;
       mostrarResultado(data);
     } catch(e) {
       document.getElementById('input-card').style.display = 'block';
@@ -368,20 +365,51 @@
     const lista = document.getElementById('campos-lista');
     lista.innerHTML = '';
     let falta = false;
+
     campos.forEach(c => {
       const v = data[c];
       const vacio = !v || v === 'null';
       if (vacio) falta = true;
+
       const row = document.createElement('div');
       row.className = 'campo-row';
-      row.innerHTML = `<span class="campo-key">${LABELS[c]}</span><span class="campo-val${vacio ? ' vacio' : ''}">${vacio ? 'No detectado' : v}</span>`;
+
+      if (vacio) {
+        const micId = `mic-campo-${c}`;
+        const inputId = `input-campo-${c}`;
+        const statusId = `status-campo-${c}`;
+        row.innerHTML = `
+          <span class="campo-key">${LABELS[c]}</span>
+          <div class="campo-editable">
+            <input class="campo-input" id="${inputId}" placeholder="Escribí o grabá..." />
+            <div class="mic-campo" id="${micId}" onclick="toggleMic('campo-${c}', '${micId}', '${statusId}', '${inputId}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </div>
+          </div>`;
+      } else {
+        row.innerHTML = `<span class="campo-key">${LABELS[c]}</span><span class="campo-val">${v}</span>`;
+      }
+
       lista.appendChild(row);
     });
+
     document.getElementById('alerta-falta').classList.toggle('visible', falta);
     document.getElementById('resultado').classList.add('visible');
   }
 
   function confirmar() {
+    const campos = tipo === 'nuevo' ? CAMPOS_NUEVO : CAMPOS_EXISTENTE;
+    campos.forEach(c => {
+      const input = document.getElementById(`input-campo-${c}`);
+      if (input && input.value.trim()) {
+        datosExtraidos[c] = input.value.trim();
+      }
+    });
     // ACÁ SE CONECTA LA URL DEL SISTEMA PHP
     document.getElementById('resultado').classList.remove('visible');
     document.getElementById('exito').classList.add('visible');
@@ -392,6 +420,7 @@
     document.getElementById('exito').classList.remove('visible');
     document.getElementById('input-card').style.display = 'block';
     document.getElementById('loading').classList.remove('visible');
+    datosExtraidos = {};
   }
 
   function resetear() {
