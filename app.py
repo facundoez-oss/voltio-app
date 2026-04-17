@@ -28,11 +28,8 @@ def interpretar():
     }
     lista = ', '.join([labels[c] for c in campos])
 
-    prompt = f"""Sos un asistente para un electricista. Extraé los campos de este texto.
-Tipo de parte: {'PARTE NUEVO' if tipo == 'nuevo' else 'PARTE EXISTENTE'}.
-
-Campos a extraer con su significado:
-- fecha: fecha del trabajo
+    if tipo == 'nuevo':
+        descripcion_campos = """- fecha: fecha del trabajo
 - cliente: nombre del cliente
 - ubicacion: dirección o lugar donde se hizo el trabajo
 - caja: tipo de tablero o caja eléctrica
@@ -40,7 +37,19 @@ Campos a extraer con su significado:
 - localizacion: lugar dentro de la propiedad donde está la caja (garage, planta baja, primer piso, etc)
 - incidencia: problema o falla que se encontró
 - observaciones: lo que se hizo para solucionar el problema
-- recomendaciones: sugerencias para el futuro
+- recomendaciones: sugerencias para el futuro"""
+    else:
+        descripcion_campos = """- nro_tarea: número de tarea o parte (si dice "Parte 342" el valor es 342)
+- fecha: fecha del trabajo
+- observaciones: lo que se realizó o completó en el trabajo
+- recomendaciones: sugerencias para el futuro o próximos pasos a largo plazo
+- tareas_pendientes: trabajos que quedaron sin terminar o que hay que hacer próximamente"""
+
+    prompt = f"""Sos un asistente para un electricista. Extraé los campos de este texto.
+Tipo de parte: {'PARTE NUEVO' if tipo == 'nuevo' else 'PARTE EXISTENTE'}.
+
+Campos a extraer con su significado:
+{descripcion_campos}
 
 Texto del electricista:
 "{texto}"
