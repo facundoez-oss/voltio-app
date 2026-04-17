@@ -30,7 +30,17 @@ def interpretar():
 
     prompt = f"""Sos un asistente para un electricista. Extraé los campos de este texto.
 Tipo de parte: {'PARTE NUEVO' if tipo == 'nuevo' else 'PARTE EXISTENTE'}.
-Campos a extraer: {lista}.
+
+Campos a extraer con su significado:
+- fecha: fecha del trabajo
+- cliente: nombre del cliente
+- ubicacion: dirección o lugar donde se hizo el trabajo
+- caja: tipo de tablero o caja eléctrica
+- caracteristicas: características técnicas del sistema eléctrico (monofásico, trifásico, voltaje, potencia, etc)
+- localizacion: lugar dentro de la propiedad donde está la caja (garage, planta baja, primer piso, etc)
+- incidencia: problema o falla que se encontró
+- observaciones: lo que se hizo para solucionar el problema
+- recomendaciones: sugerencias para el futuro
 
 Texto del electricista:
 "{texto}"
