@@ -29,7 +29,7 @@ def interpretar():
     lista = ', '.join([labels[c] for c in campos])
 
     if tipo == 'nuevo':
-        descripcion_campos = """- fecha: fecha del trabajo
+        descripcion_campos = """- fecha: fecha del trabajo en formato DD/MM/YYYY (ejemplo: 12/04/2026)
 - cliente: nombre del cliente
 - ubicacion: dirección o lugar donde se hizo el trabajo
 - caja: tipo de tablero o caja eléctrica
@@ -40,7 +40,7 @@ def interpretar():
 - recomendaciones: sugerencias para el futuro"""
     else:
         descripcion_campos = """- nro_tarea: número de tarea o parte (si dice "Parte 342" el valor es 342)
-- fecha: fecha del trabajo
+- fecha: fecha del trabajo en formato DD/MM/YYYY (ejemplo: 12/04/2026)
 - observaciones: lo que se realizó o completó en el trabajo
 - recomendaciones: sugerencias para el futuro o próximos pasos a largo plazo
 - tareas_pendientes: trabajos que quedaron sin terminar o que hay que hacer próximamente"""
