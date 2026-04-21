@@ -90,7 +90,52 @@ def transcribir():
         return jsonify({"texto": transcript.text})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@app.route('/corregir-campo', methods=['POST'])
+def corregir_campo():
+    try:
+        data = request.json
+        campo = data.get('campo', '')
+        valor_actual = data.get('valor_actual', '')
+        texto = data.get('texto', '')
 
+        labels = {
+            'fecha': 'fecha del trabajo en formato DD/MM/YYYY',
+            'cliente': 'nombre del cliente',
+            'ubicacion': 'dirección o lugar del trabajo',
+            'caja': 'tipo de tablero o caja eléctrica',
+            'caracteristicas': 'características técnicas del sistema eléctrico',
+            'localizacion': 'lugar dentro de la propiedad',
+            'incidencia': 'problema o falla encontrada',
+            'observaciones': 'lo que se hizo para solucionar',
+            'recomendaciones': 'sugerencias para el futuro',
+            'nro_tarea': 'número de tarea o parte',
+            'tareas_pendientes': 'trabajos que quedaron pendientes'
+        }
+
+        descripcion = labels.get(campo, campo)
+
+        prompt = f"""Sos un asistente para un electricista. El electricista quiere corregir el campo "{descripcion}".
+
+Valor actual del campo: "{valor_actual}"
+Lo que dijo el electricista: "{texto}"
+
+Tu tarea es interpretar lo que quiere corregir y devolver SOLO el valor correcto para ese campo.
+No expliques nada, no agregues texto extra. Solo devolvé el valor corregido.
+Ejemplos:
+- Si dice "va con z no con s" → corregí la letra en el valor actual
+- Si dice "el número es 342 no 324" → devolvé 342
+- Si dice "en realidad es tal cosa" → devolvé tal cosa
+- Si dice directamente el valor nuevo → devolvé ese valor"""
+
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=100
+        )
+        valor_corregido = response.choices[0].message.content.strip()
+        return jsonify({"valor": valor_corregido})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

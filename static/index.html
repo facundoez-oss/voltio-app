@@ -296,11 +296,23 @@
             const data = await res.json();
             const texto = data.texto || '';
             if (inputId) {
+            const valorActual = document.getElementById(inputId).value;
+            const campoNombre = inputId.replace('input-campo-', '');
+            try {
+              const resC = await fetch('/corregir-campo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ campo: campoNombre, valor_actual: valorActual, texto: texto })
+              });
+              const dataC = await resC.json();
+              document.getElementById(inputId).value = dataC.valor || texto;
+            } catch(e) {
               document.getElementById(inputId).value = texto;
-            } else {
-              document.getElementById('input-transcripcion').value = texto;
-              document.getElementById('transcript-area').style.display = 'block';
             }
+          } else {
+            document.getElementById('input-transcripcion').value = texto;
+            document.getElementById('transcript-area').style.display = 'block';
+          }
             if (statusEl) statusEl.textContent = 'Listo. Podés grabar de nuevo o interpretar.';
           } catch(e) {
             if (statusEl) statusEl.textContent = 'Error al transcribir.';
