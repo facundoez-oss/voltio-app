@@ -114,18 +114,24 @@ def corregir_campo():
 
         descripcion = labels.get(campo, campo)
 
-        prompt = f"""Sos un asistente para un electricista. El electricista quiere corregir el campo "{descripcion}".
+        prompt = f"""Sos un asistente para un electricista. Tu tarea es corregir el valor de un campo específico.
 
+Campo a corregir: "{descripcion}"
 Valor actual del campo: "{valor_actual}"
-Lo que dijo el electricista: "{texto}"
+Lo que dijo el electricista para corregirlo: "{texto}"
 
-Tu tarea es interpretar lo que quiere corregir y devolver SOLO el valor correcto para ese campo.
-No expliques nada, no agregues texto extra. Solo devolvé el valor corregido.
+Reglas importantes:
+- Si el electricista dice que una letra va con otra (ej: "va con z no con s"), corregí ESA letra en la palabra correspondiente
+- Si menciona varias correcciones en una sola frase, aplicá TODAS las correcciones juntas al valor final
+- Devolvé SOLO el valor final corregido y completo, sin explicaciones
+- No inventes información, solo corregí lo que pidió
+
 Ejemplos:
-- Si dice "va con z no con s" → corregí la letra en el valor actual
-- Si dice "el número es 342 no 324" → devolvé 342
-- Si dice "en realidad es tal cosa" → devolvé tal cosa
-- Si dice directamente el valor nuevo → devolvé ese valor"""
+- Valor actual: "Fabricio Greco", dice "Fabricio va con z y Greco con doble c" → devolvés: "Fabrizio Grecco"
+- Valor actual: "21 de abril", dice "es el 22 no el 21" → devolvés: "22/04/2026"
+- Valor actual: "", dice "es Rivera 1250" → devolvés: "Rivera 1250"
+
+Devolvé SOLO el valor corregido:"""
 
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
