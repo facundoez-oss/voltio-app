@@ -98,8 +98,7 @@ def corregir_campo():
         campo = data.get('campo', '')
         valor_actual = data.get('valor_actual', '')
         texto = data.get('texto', '')
-
-       labels = {
+        labels = {
             'fecha': 'fecha del trabajo en formato DD/MM/YYYY',
             'cliente': 'nombre y apellido de la persona (solo el nombre, sin frases tipo "fui a lo de")',
             'direccion': 'dirección física del lugar (calle y número)',
