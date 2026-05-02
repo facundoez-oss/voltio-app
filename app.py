@@ -86,7 +86,8 @@ def transcribir():
         transcript = client.audio.transcriptions.create(
             model="whisper-1",
             file=("audio.webm", audio.read(), "audio/webm"),
-            language="es"
+            language="es",
+            prompt="Transcripción de un electricista. Términos técnicos comunes: Schuko, disyuntor, térmica, bipolar, tripolar, monofásico, trifásico, tablero, llave térmica, interruptor diferencial, plaqueta, módulo, casquete, toma corriente, voltaje, amperaje, neutro, fase, tierra, conductor, cableado, canalización, canaleta, bornera, contactor, luminaria, LED, dicroica, fluorescente, transformador."
         )
         return jsonify({"texto": transcript.text})
     except Exception as e:
