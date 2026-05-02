@@ -5,7 +5,7 @@ import os
 app = Flask(__name__, static_folder='static')
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-CAMPOS_NUEVO = ['fecha', 'cliente', 'ubicacion', 'caja', 'caracteristicas', 'localizacion', 'incidencia', 'observaciones', 'recomendaciones']
+CAMPOS_NUEVO = ['fecha', 'cliente', 'direccion', 'ubicacion', 'caja', 'caracteristicas', 'localizacion', 'incidencia',
 CAMPOS_EXISTENTE = ['nro_tarea', 'fecha', 'observaciones', 'recomendaciones', 'tareas_pendientes']
 
 @app.route('/')
@@ -20,7 +20,7 @@ def interpretar():
 
     campos = CAMPOS_NUEVO if tipo == 'nuevo' else CAMPOS_EXISTENTE
     labels = {
-        'fecha': 'Fecha', 'cliente': 'Cliente', 'ubicacion': 'Ubicación',
+        'fecha': 'Fecha', 'cliente': 'Cliente', 'direccion': 'Dirección', 'ubicacion': 'Ubicación',
         'caja': 'Caja', 'caracteristicas': 'Características', 'localizacion': 'Localización',
         'incidencia': 'Incidencia', 'observaciones': 'Observaciones',
         'recomendaciones': 'Recomendaciones', 'nro_tarea': 'Nro. tarea',
@@ -30,13 +30,14 @@ def interpretar():
 
     if tipo == 'nuevo':
         descripcion_campos = """- fecha: fecha del trabajo en formato DD/MM/YYYY (ejemplo: 12/04/2026)
-- cliente: nombre del cliente
-- ubicacion: dirección o lugar donde se hizo el trabajo
+- cliente: SOLO nombre y apellido de la persona (ejemplo: "Julio Pérez", "María González"). IMPORTANTE: si el electricista dice frases como "fui a lo de Julio", "estuve en lo de Pérez", "trabajé donde Martínez", extraé SOLO el nombre/apellido (Julio, Pérez, Martínez). NO incluyas palabras como "fui", "fiel", "lo de", "a lo de", etc. Si no se menciona claramente un nombre de persona, dejá null.
+- direccion: dirección física del lugar donde se hizo el trabajo (calle, número, barrio, ejemplo: "Bulevar España 2340", "Av. Italia 1500")
+- ubicacion: lugar dentro de la propiedad donde se hizo la tarea o donde está la falla (ejemplos: "garage", "cuarto principal", "taller", "cocina", "sótano")
 - caja: tipo de tablero o caja eléctrica
-- caracteristicas: características técnicas del sistema eléctrico (monofásico, trifásico, voltaje, potencia, etc)
-- localizacion: lugar dentro de la propiedad donde está la caja (garage, planta baja, primer piso, etc)
-- incidencia: problema o falla que se encontró
-- observaciones: lo que se hizo para solucionar el problema
+- caracteristicas: detalle del equipo o componentes que hay (o que se van a instalar) en esa localización. NO son características técnicas como voltaje o trifásico. Son los componentes físicos. Ejemplos: "1 plaqueta de llave para 3 módulos, 1 módulo Schuko, 1 módulo universal", "casquete con lámpara LED 12W", "interruptor doble + toma corriente"
+- localizacion: el punto exacto dentro de la ubicación donde está la falla o donde se trabaja. Especifica QUÉ es y DÓNDE está dentro de la ubicación. Ejemplos: "casquete centro techo", "caja de interruptor de luz pared norte", "torre este pared norte", "armario centro pared oeste", "toma corriente parte inferior pared sur"
+- incidencia: lo que el cliente reporta o solicita (el desperfecto que dice que tiene o la instalación que pide). Es lo que dice el cliente, NO el diagnóstico técnico del electricista. Ejemplos: "no funciona la luz", "no anda el toma corriente", "instalación de tablero nuevo", "adicionar tomas en el living"
+- observaciones: detalle de lo que el electricista hizo en esa asistencia/visita específica. Es el trabajo concreto realizado ese día. Ejemplos: "desmonte, relevamiento, localización de falla en toma corriente", "acopio de materiales y costos del material retirado", "desconexión, recambio de módulo, colocación de plaqueta, armado, conectado, probado funcionando correctamente"
 - recomendaciones: sugerencias para el futuro"""
     else:
         descripcion_campos = """- nro_tarea: número de tarea o parte (si dice "Parte 342" el valor es 342)
@@ -98,15 +99,16 @@ def corregir_campo():
         valor_actual = data.get('valor_actual', '')
         texto = data.get('texto', '')
 
-        labels = {
+       labels = {
             'fecha': 'fecha del trabajo en formato DD/MM/YYYY',
-            'cliente': 'nombre del cliente',
-            'ubicacion': 'dirección o lugar del trabajo',
+            'cliente': 'nombre y apellido de la persona (solo el nombre, sin frases tipo "fui a lo de")',
+            'direccion': 'dirección física del lugar (calle y número)',
+            'ubicacion': 'lugar dentro de la propiedad donde se hace la tarea o está la falla (garage, taller, cuarto, etc)',
             'caja': 'tipo de tablero o caja eléctrica',
-            'caracteristicas': 'características técnicas del sistema eléctrico',
-            'localizacion': 'lugar dentro de la propiedad',
-            'incidencia': 'problema o falla encontrada',
-            'observaciones': 'lo que se hizo para solucionar',
+            'caracteristicas': 'detalle de los componentes o equipo que hay en la localización (ej: 1 plaqueta llave 3 módulos, 1 módulo Schuko)',
+            'localizacion': 'punto exacto dentro de la ubicación, qué es y dónde está (ej: casquete centro techo, torre este pared norte)',
+            'incidencia': 'lo que el cliente reporta o solicita (no el diagnóstico técnico)',
+            'observaciones': 'lo que hizo el electricista en esa asistencia específica',
             'recomendaciones': 'sugerencias para el futuro',
             'nro_tarea': 'número de tarea o parte',
             'tareas_pendientes': 'trabajos que quedaron pendientes'
