@@ -5,7 +5,7 @@ import os
 app = Flask(__name__, static_folder='static')
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-CAMPOS_NUEVO = ['fecha', 'cliente', 'direccion', 'ubicacion', 'caja', 'caracteristicas', 'localizacion', 'incidencia',
+CAMPOS_NUEVO = ['fecha', 'cliente', 'direccion', 'ubicacion', 'caja', 'caracteristicas', 'localizacion', 'incidencia', 'observaciones', 'recomendaciones']
 CAMPOS_EXISTENTE = ['nro_tarea', 'fecha', 'observaciones', 'recomendaciones', 'tareas_pendientes']
 
 @app.route('/')
